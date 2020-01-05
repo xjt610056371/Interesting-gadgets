@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Fly Bird</title>
+		<link rel="stylesheet" type="text/css" href="index.css"/>
+		<style type="text/css">
+			* {
+				margin: 0;
+				padding: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="bg">
+			<div class="grass"></div>
+			
+			<div class="page01">
+				<div class="head">
+					<div class="headBird"></div>
+				</div>
+				<div class="start"></div>
+			</div>
+			
+			<div class="page02">
+				<div class="bird"></div>
+			</div>
+			
+			<div class="page03">
+				<div class="over"></div>
+				<div class="ok"></div>
+			</div>
+		</div>
+		<div class="number"></div>
+		<script src="tool.js" type="text/javascript"></script>
+		<script src="index.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			(function() {
+				var grass = document.querySelector('.grass'),
+				    numberDiv = document.querySelector('.number'),
+					page1 = document.querySelector('.page01'),
+					page2 = document.querySelector('.page02'),
+					page3 = document.querySelector('.page03'),
+					start = page1.children[1],
+					bird = page2.children[0],
+					ok = page3.children[1],
+					timerPipe,
+					timerArr = [],
+					number = 0
+				//草地移动
+				grass.timerId = setInterval(function() {
+					grass.style.left = parseInt(getStyle(grass, 'left')) - 1 + 'px'
+					if(parseInt(getStyle(grass, 'left')) < -343) {
+						grass.style.left = '0px'
+					}
+				}, 10)
+				
+				function createDiv() {
+					var ran = random()
+					var uptmpDiv1 = document.createElement('div')
+					var uptmpDiv2 = document.createElement('div')
+					uptmpDiv1.className = 'pipeUp'
+					uptmpDiv1.style.height = ran + 'px'
+					page2.appendChild(uptmpDiv1)
+					uptmpDiv1.appendChild(uptmpDiv2)
+					
+					var downtmpDiv1 = document.createElement('div')
+					var downtmpDiv2 = document.createElement('div')
+					downtmpDiv1.className = 'pipeDown'
+					downtmpDiv1.style.height = 480 - ran - 150 - 57 + 'px'
+					page2.appendChild(downtmpDiv1)
+					downtmpDiv1.appendChild(downtmpDiv2)
+					
+					var timer = setInterval(function() {
+						//柱子水平移动
+						uptmpDiv1.style.left = parseInt(getStyle(uptmpDiv1, 'left')) - 1 + 'px'
+						downtmpDiv1.style.left = parseInt(getStyle(downtmpDiv1, 'left')) - 1 + 'px'
+						//柱子移除判断
+						if(parseInt(getStyle(downtmpDiv1, 'left')) === -62)
+						{
+							page2.removeChild(uptmpDiv1)
+							page2.removeChild(downtmpDiv1)
+							clearInterval(timer)
+						} 
+						//碰撞检查
+						if(check_block_conllision(bird, uptmpDiv1) || check_block_conllision(bird, downtmpDiv1)
+						   || bird.offsetTop > 397){
+							for(var i = 0; i < timerArr.length; i++) {
+								clearInterval(timerArr[i])
+							}
+							clearInterval(bird.timerId)
+							clearInterval(bird.timerId2)
+							clearInterval(timerPipe)
+							clearInterval(grass.timerId)
+							page3.style.display = 'block'
+							numberDiv.innerHTML = '您的分数为：' + number
+						}
+						//越过柱子检测,分数增加
+						if(uptmpDiv1.offsetLeft === -1){
+							number++
+							numberDiv.innerHTML = number
+						}
+					}, 10)
+					timerArr.push(timer)
+				}
+				
+				start.addEventListener('click', function() {
+					page1.style.display = 'none'
+					number = 0
+					timerArr = []
+					//页面2初始化
+					page2.innerHTML = '<div class="bird"></div>'
+					page2.style.display = 'block'
+					bird = page2.children[0]
+					bird.style.top = '200px'
+					//小鸟开始下坠
+					animate(bird, {top: 480})
+					//1s后生产柱子
+					timerPipe = setInterval(function() {
+						createDiv()
+					}, 2000)
+				})
+				page2.addEventListener('click', function() {
+					var tmp = parseInt(getStyle(bird, 'top')) - 80
+					clearInterval(bird.timerId)
+					clearInterval(bird.timerId2)
+					animate2(bird, {top: tmp})
+				})
+				ok.addEventListener('click', function() {
+					page1.style.display = 'block'
+					page2.style.display = 'none'
+					page3.style.display = 'none'
+					numberDiv.innerHTML = ''
+					grass.timerId = setInterval(function() {
+						grass.style.left = parseInt(getStyle(grass, 'left')) - 1 + 'px'
+						if(parseInt(getStyle(grass, 'left')) < -343) {
+							grass.style.left = '0px'
+						}
+					}, 10)
+				})
+				
+				
+			})()
+		</script>
+	</body>
+</html>
