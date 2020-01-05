@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style type="text/css">
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			.magnifier .left {
+				width: 155px;
+				height: 334px;
+				float: left;
+			}
+			.magnifier .left #img {
+				width: 155px;
+				height: 334px;
+				background-image: url(images/img01.jpg);
+			}
+			.magnifier .left .float {
+				width: 50px;
+				height: 50px;
+				background: pink;
+				opacity: 0;
+				position: absolute;
+				left: 0;
+				top: 0;
+			}
+			.magnifier .right {
+				height: 300px;
+				width: 300px;
+				background-image: url(images/img02.jpg);
+				float: left;
+				margin: 50px;
+				display: none;
+			}
+			
+		</style>
+	</head>
+	<body>
+		<div class="magnifier">
+			<div class="left">
+				<div id="img"></div>
+				<div class="float"></div>
+			</div>
+			<div class="right">
+			</div>
+		</div>
+		<script src="tool.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			(function() {
+				var img = document.querySelector('.magnifier .left')
+				var pink = document.querySelector('.magnifier .left .float')
+				var show = document.querySelector('.magnifier .right')
+				
+				img.addEventListener('mousemove', function(event) {
+					pink.style.opacity = 0.5
+					show.style.display = 'block'
+					var pink_width = parseInt(getStyle(pink, 'width'))
+					var pink_height = parseInt(getStyle(pink, 'height'))
+					var img_width = parseInt(getStyle(img, 'width'))
+					var img_height = parseInt(getStyle(img, 'height'))
+					if (event.clientX < pink_width / 2) {
+						pink.style.left = '0px'
+						show.style.backgroundPositionX = '0px'
+					} else if (event.clientX > img_width - pink_width / 2) {
+						pink.style.left = img_width - pink_width + 'px'
+						show.style.backgroundPositionX = -(img_width - pink_width) * 4 + 'px'
+					} else {
+						pink.style.left = event.clientX - pink_width / 2 + 'px'
+						show.style.backgroundPositionX = -(event.clientX - pink_width / 2 ) * 4 + 'px'
+					}
+					
+					if (event.clientY < pink_height / 2) {
+						pink.style.top = '0px'
+						show.style.backgroundPositionY = '0px'
+					} else if (event.clientY > img_height - pink_height / 2) {
+						pink.style.top = img_height - pink_height + 'px'
+						show.style.backgroundPositionY = -(img_height - pink_height)*4 + 'px'
+					} else {
+						pink.style.top = event.clientY - pink_height / 2 + 'px'
+						show.style.backgroundPositionY = -(event.clientY - pink_height / 2) * 4 + 'px'
+					}
+				})
+				img.addEventListener('mouseout', function() {
+					pink.style.opacity = 0
+					show.style.display = 'none'
+				})
+			})()
+		</script>
+	</body>
+</html>
