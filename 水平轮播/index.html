@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style type="text/css">
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			ul {
+				list-style: none;
+			}
+			.slider {
+				width: 1024px;
+				height: 341px;
+				border: 1px solid red;
+				position: relative;
+				overflow: hidden;
+			}
+			.slider .list {
+				width: 6144px;
+				height: 341px;
+				position: absolute;
+				left: -1024px;
+			}
+			.slider .list .item {
+				width: 1024px;
+				height: 341px;
+				float: left;
+			}
+			.slider .list .item img {
+				width: 1024px;
+				height: 341px;
+				display: block;
+			}
+			.slider .next, .slider .prev {
+				position: absolute;
+				top: 171px;
+			}
+			.slider .next {
+				left: 994px;
+			}
+			.slider .pagination {
+				position: relative;
+				top: 300px;
+				left: 462px;
+			}
+			.slider .pagination .bullet {
+				width: 20px;
+				height: 20px;
+				border-radius: 10px;
+				background-color: red;
+				float: left;
+				margin-left: 5px;
+				cursor: pointer;
+			}
+			.slider .pagination .bullet.focus {
+				background-color: aquamarine;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="slider">
+			<ul class="list">
+				<li class="item"><img src="./images/4.jpg" alt=""></li>
+				<li class="item"><img src="./images/1.jpg" alt=""></li>
+				<li class="item"><img src="./images/2.jpg" alt=""></li>
+				<li class="item"><img src="./images/3.jpg" alt=""></li>
+				<li class="item"><img src="./images/4.jpg" alt=""></li>
+				<li class="item"><img src="./images/1.jpg" alt=""></li>
+			</ul>
+			<button class="prev">prev</button>
+			<button class="next">next</button>
+			<ul class="pagination">
+				<li class="bullet focus"></li>
+				<li class="bullet"></li>
+				<li class="bullet"></li>
+				<li class="bullet"></li>
+			</ul>
+		</div>
+		<script src="tool.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			(function () {
+				
+				// var nextIndex = 1,
+				// 	prevIndex = 0,
+				// 	slider = document.querySelector('.slider'),
+				// 	lis = document.querySelector('.slider .list'),
+				// 	lisItem = document.querySelectorAll('.slider .list .item'),
+				// 	len = lisItem.length,
+				// 	btnPrev = document.querySelector('.prev'),
+				// 	btnNext = document.querySelector('.next'),
+				// 	bullets = document.querySelectorAll('.pagination .bullet'),
+				// 	flash = setInterval(slideNext, 2000)
+				
+				
+					
+				// for (let i = 0; i < bullets.length; i++) {
+				// 	bullets[i].onclick = function () {
+				// 		nextIndex = i + 1
+				// 		slideTo()
+				// 	}
+				// }
+				
+				// slider.onmousemove = stopAuto
+				// slider.onmouseout = auto
+				
+				// btnPrev.onclick = slidePrev
+				// btnNext.onclick = slideNext
+				
+				// // //自动播放
+				// function auto() {
+				// 	clearInterval(flash)
+				// 	flash = setInterval(slideNext, 2000)
+				// }
+				// // //停止自动播放
+				// function stopAuto() {
+				// 	clearInterval(flash)
+				// }
+				// //向左滑动
+				// function slidePrev() {
+				// 	nextIndex--
+				// 	slideTo()
+				// }
+				// //向右滑动
+				// function slideNext() {
+				// 	nextIndex++
+				// 	slideTo()
+				// }
+				// //向 next(滑动后的位置) 滑动
+				// function slideTo() {
+				// 	if (nextIndex === 0) {
+				// 		nextIndex = len - 1
+				// 		lis.style.left = (-1024 * nextIndex) + 'px'
+				// 		nextIndex--
+				// 	} else if (nextIndex === len - 1) {
+				// 		nextIndex = 0
+				// 		lis.style.left = (nextIndex * -1024) + 'px'
+				// 		nextIndex++
+				// 	}
+				// 	animate(lis, {left: -1024 * nextIndex})
+				// 	bullets[prevIndex].className = 'bullet'
+				// 	bullets[nextIndex - 1].className = 'bullet focus'
+				// 	prevIndex = nextIndex - 1
+				// }
+				
+				var nextIndex = 1,
+					prevIndex = 1,
+					slider = document.querySelector('.slider'),
+					lis = document.querySelector('.slider .list'),
+					lisItem = document.querySelectorAll('.slider .list .item'),
+					len = lisItem.length,
+					btnPrev = document.querySelector('.prev'),
+					btnNext = document.querySelector('.next'),
+					bullets = document.querySelectorAll('.pagination .bullet'),
+					flash = setInterval(slideNext, 2000)
+				
+				for (let i = 0; i < bullets.length; i++) {
+					bullets[i].onclick = function () {
+						prevIndex = nextIndex
+						nextIndex = i + 1
+						if (prevIndex === 1 && nextIndex === 4)
+						{
+							nextIndex = 0
+						} else if (prevIndex === 4 && nextIndex === 1) {
+							nextIndex = 5
+						}
+						slideTo(prevIndex, nextIndex)
+					}
+				}
+				
+				slider.onmousemove = stopAuto
+				slider.onmouseout = auto
+				
+				btnPrev.onclick = slidePrev	
+				btnNext.onclick = slideNext
+				
+				//自动播放
+				function auto() {
+					clearInterval(flash)
+					flash = setInterval(slideNext, 2000)
+				}
+				//停止自动播放
+				function stopAuto() {
+					clearInterval(flash)
+				}
+				//向左滑动
+				function slidePrev() {
+					prevIndex = nextIndex
+					nextIndex--
+					slideTo(prevIndex, nextIndex)
+				}
+				//向右滑动
+				function slideNext() {
+					prevIndex = nextIndex
+					nextIndex++
+					slideTo(prevIndex, nextIndex)
+				}
+				//从 prev(当前位置) 向 next(滑动后的位置) 滑动
+				function slideTo(prev, next) {
+					if (next === 0) {
+						prev = len - 1
+						nextIndex = next = prev - 1
+						lis.style.left = (-1024 * prev) + 'px'
+					} else if (next === len - 1) {
+						prev = 0
+						nextIndex = next = prev + 1
+						lis.style.left = (-1024 * prev) + 'px'
+					}
+					animate(lis, {left: -1024 * next})
+					bullets[prevIndex - 1].className = 'bullet'
+					bullets[next - 1].className = 'bullet focus'
+				}
+			})()
+		</script>
+	</body>
+</html>
