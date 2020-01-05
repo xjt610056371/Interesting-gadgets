@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style type="text/css">
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			ul {
+				list-style: none;
+			}
+			.slider {
+				width: 1024px;
+				height: 341px;
+				border: 1px solid red;
+				position: relative;
+			}
+			.slider .list .item {
+				position: absolute;
+				left: 0px;
+				top: 0px;
+				opacity: 0;
+			}
+			.slider .list .item:first-of-type {
+				opacity: 1;
+			}
+			.slider .list .item img {
+				width: 1024px;
+				height: 341px;
+				display: block;
+			}
+			.slider .next, .slider .prev {
+				position: absolute;
+				top: 171px;
+			}
+			.slider .next {
+				left: 994px;
+			}
+			.slider .pagination {
+				position: relative;
+				top: 300px;
+				left: 462px;
+			}
+			.slider .pagination .bullet {
+				width: 20px;
+				height: 20px;
+				border-radius: 10px;
+				background-color: red;
+				float: left;
+				margin-left: 5px;
+				cursor: pointer;
+			}
+			.slider .pagination .bullet.focus {
+				background-color: aquamarine;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="slider">
+			<ul class="list">
+				<li class="item"><img src="./images/1.jpg" alt=""></li>
+				<li class="item"><img src="./images/2.jpg" alt=""></li>
+				<li class="item"><img src="./images/3.jpg" alt=""></li>
+				<li class="item"><img src="./images/4.jpg" alt=""></li>
+			</ul>
+			<button class="prev">prev</button>
+			<button class="next">next</button>
+			<ul class="pagination">
+				<li class="bullet focus"></li>
+				<li class="bullet"></li>
+				<li class="bullet"></li>
+				<li class="bullet"></li>
+			</ul>
+		</div>
+		<script src="tool.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			(function () {
+				
+				var prevIndex = 0,
+					nextIndex = 0,
+					slider = document.querySelector('.slider'),
+					lis = document.querySelectorAll('.list .item'),
+					len = lis.length,
+					btnPrev = document.querySelector('.prev'),
+					btnNext = document.querySelector('.next'),
+					bullets = document.querySelectorAll('.pagination .bullet'),
+					flash = setInterval(slideNext, 2000)
+					
+				for (var i = 0; i < bullets.length; i++) {
+					bullets[i].onclick = function () {
+						prevIndex = nextIndex
+						nextIndex = i
+						if (nextIndex === -1) {
+							nextIndex = len - 1
+						}
+						slideTo(prevIndex, nextIndex)
+					}
+				}
+				
+				slider.onmousemove = stopAuto
+				slider.onmouseout = auto
+				
+				btnPrev.onclick = slidePrev	
+				btnNext.onclick = slideNext
+				
+				//自动播放
+				function auto() {
+					clearInterval(flash)
+					flash = setInterval(slideNext, 2000)
+				}
+				//停止自动播放
+				function stopAuto() {
+					clearInterval(flash)
+				}
+				//向左滑动
+				function slidePrev() {
+					prevIndex = nextIndex
+					nextIndex--
+					if (nextIndex === -1) {
+						nextIndex = len - 1
+					}
+					slideTo(prevIndex, nextIndex)
+				}
+				//向右滑动
+				function slideNext() {
+					prevIndex = nextIndex
+					nextIndex++
+					if (nextIndex === len) {
+						nextIndex = 0
+					}
+					slideTo(prevIndex, nextIndex)
+				}
+				//从 prev(当前位置) 向 next(滑动后的位置) 滑动
+				function slideTo(prev, next) {
+					animate(lis[prev], {opacity:0})
+					animate(lis[next], {opacity:100})
+					
+					bullets[prev].className = 'bullet'
+					bullets[next].className = 'bullet focus'
+				}
+			})()
+		</script>
+	</body>
+</html>
